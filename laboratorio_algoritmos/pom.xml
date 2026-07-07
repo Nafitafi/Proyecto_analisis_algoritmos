@@ -10,4 +10,12 @@
         <maven.compiler.release>25</maven.compiler.release>
         <exec.mainClass>itson.org.laboratorio_algoritmos.Laboratorio_algoritmos</exec.mainClass>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.knowm.xchart</groupId>
+            <artifactId>xchart</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+    </dependencies>
+
 </project>
