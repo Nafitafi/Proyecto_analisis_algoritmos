@@ -254,6 +254,57 @@ public class FrmSetup extends javax.swing.JFrame {
         btnAnalizar.setText("Analizar");
         btnAnalizar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
 
+        btnAnimacion = new itson.org.laboratorio_algoritmos.gui.utils.BotonRedondeado();
+        btnAnimacion.setBackground(new java.awt.Color(208, 220, 254));
+        btnAnimacion.setForeground(new java.awt.Color(31, 0, 78));
+        btnAnimacion.setText("Animaci\u00f3n");
+        btnAnimacion.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+         btnAnimacion.addActionListener(e -> {
+            String texto = txtCantidad.getText().trim();
+            if (texto.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(
+                    FrmSetup.this,
+                    "Debes ingresar una cantidad de elementos.",
+                    "Campo vac\u00edo",
+                    javax.swing.JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+            int tamano;
+            try {
+                tamano = Integer.parseInt(texto);
+            } catch (NumberFormatException ex) {
+                javax.swing.JOptionPane.showMessageDialog(
+                    FrmSetup.this,
+                    "La cantidad debe ser un n\u00famero entero v\u00e1lido.",
+                    "N\u00famero inv\u00e1lido",
+                    javax.swing.JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+            if (tamano < 10 || tamano > 200) {
+                javax.swing.JOptionPane.showMessageDialog(
+                    FrmSetup.this,
+                    "La animaci\u00f3n requiere entre 10 y 200 elementos.",
+                    "Fuera de rango",
+                    javax.swing.JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
+            itson.org.laboratorio_algoritmos.datos.GeneradorDeArreglos.TipoArreglo tipo;
+            if (rbtnOrdenados.isSelected()) {
+                tipo = itson.org.laboratorio_algoritmos.datos.GeneradorDeArreglos.TipoArreglo.ORDENADO;
+            } else if (rbtnCasiOrdenado.isSelected()) {
+                tipo = itson.org.laboratorio_algoritmos.datos.GeneradorDeArreglos.TipoArreglo.CASI_ORDENADO;
+            } else if (rbtnInvertido.isSelected()) {
+                tipo = itson.org.laboratorio_algoritmos.datos.GeneradorDeArreglos.TipoArreglo.INVERSO;
+            } else {
+                tipo = itson.org.laboratorio_algoritmos.datos.GeneradorDeArreglos.TipoArreglo.ALEATORIO;
+            }
+            FrmAnimacion animacion = new FrmAnimacion(tamano, tipo);
+            animacion.setVisible(true);
+        });
+
         javax.swing.GroupLayout pnlPrincipalLayout = new javax.swing.GroupLayout(pnlPrincipal);
         pnlPrincipal.setLayout(pnlPrincipalLayout);
         pnlPrincipalLayout.setHorizontalGroup(
@@ -270,8 +321,10 @@ public class FrmSetup extends javax.swing.JFrame {
                         .addGap(35, 35, 35)
                         .addComponent(panelRedondeado2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlPrincipalLayout.createSequentialGroup()
-                        .addGap(425, 425, 425)
-                        .addComponent(btnAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(350, 350, 350)
+                        .addComponent(btnAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnAnimacion, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(75, Short.MAX_VALUE))
         );
         pnlPrincipalLayout.setVerticalGroup(
@@ -284,7 +337,9 @@ public class FrmSetup extends javax.swing.JFrame {
                     .addComponent(pnlCreacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelRedondeado2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(31, 31, 31)
-                .addComponent(btnAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(btnAnalizar, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAnimacion, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(42, Short.MAX_VALUE))
         );
 
@@ -306,6 +361,7 @@ public class FrmSetup extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bgrpOrden;
     private itson.org.laboratorio_algoritmos.gui.utils.BotonRedondeado btnAnalizar;
+    private itson.org.laboratorio_algoritmos.gui.utils.BotonRedondeado btnAnimacion;
     private javax.swing.JCheckBox chkBubble;
     private javax.swing.JCheckBox chkHeap;
     private javax.swing.JCheckBox chkInsertion;
