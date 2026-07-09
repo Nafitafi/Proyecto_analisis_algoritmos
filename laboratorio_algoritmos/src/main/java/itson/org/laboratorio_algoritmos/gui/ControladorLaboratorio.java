@@ -41,6 +41,21 @@ public class ControladorLaboratorio {
         return resultados;
     }
 
+    public List<ResultadoOrdenamiento> analizar(
+            int[] arregloBase,
+            List<TipoAlgoritmo> algoritmosSeleccionados) {
+
+        List<ResultadoOrdenamiento> resultados = new ArrayList<>();
+
+        for (TipoAlgoritmo tipo : algoritmosSeleccionados) {
+            AlgoritmoOrdenamiento algoritmo = obtenerInstanciaAlgoritmo(tipo);
+            ResultadoOrdenamiento resultado = algoritmo.ordenar(arregloBase);
+            resultados.add(resultado);
+        }
+
+        return resultados;
+    }
+
     /**
      * Metodo auxiliar para convertir el enum del tipo de algoritmos
      * a su respectiva instancia concreta.
