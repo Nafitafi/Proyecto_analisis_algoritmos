@@ -64,8 +64,8 @@ public class MergeSort implements AlgoritmoOrdenamiento {
         }
 
         int i = izquierda;     // Puntero para la primera mitad
-        int j = mitad + 1;  // Puntero para la segunda mitad
-        int k = derecha;     // Puntero para el arreglo original
+        int j = mitad + 1;     // Puntero para la segunda mitad
+        int k = izquierda;     // Puntero para escribir en el arreglo original
 
         // Fusionar los subarreglos en orden
         while (i <= mitad && j <= derecha) {

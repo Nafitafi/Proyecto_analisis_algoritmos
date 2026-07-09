@@ -18,7 +18,7 @@ public class QuickSort implements AlgoritmoOrdenamiento {
 
         //Si el arreglo esta vacio     
         if (arr == null || arr.length <= 1) {
-            return new ResultadoOrdenamiento("QuickS Sort", 0, 0, 0);
+            return new ResultadoOrdenamiento("Quick Sort", 0, 0, 0);
         }
 
         //Acumuladroes 
@@ -50,7 +50,7 @@ public class QuickSort implements AlgoritmoOrdenamiento {
 
             //Ordenar recursivamente los elementos antes y despues de la partición
             quickSort(arr, bajo, indicePivote - 1, contadores);
-            quickSort(arr, indicePivote - 1, alto, contadores);
+            quickSort(arr, indicePivote + 1, alto, contadores);
         }
 
     }
