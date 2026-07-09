@@ -118,7 +118,7 @@ public class FrmAnimacion extends javax.swing.JFrame {
         lblAlgoritmo.setText("Algoritmo:");
 
         cboAlgoritmo.setFont(new java.awt.Font("Corbel", 0, 14));
-        cboAlgoritmo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bubble Sort", "Selection Sort", "Insertion Sort" }));
+        cboAlgoritmo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Bubble Sort", "Selection Sort", "Insertion Sort", "Merge Sort", "Quick Sort", "Heap Sort" }));
 
         lblTamano.setFont(new java.awt.Font("Corbel", 0, 16));
         lblTamano.setForeground(new java.awt.Color(31, 0, 78));
@@ -301,6 +301,9 @@ public class FrmAnimacion extends javax.swing.JFrame {
                 case "Bubble Sort" -> VisualizadorOrdenamiento.bubbleSort(arr, callback);
                 case "Selection Sort" -> VisualizadorOrdenamiento.selectionSort(arr, callback);
                 case "Insertion Sort" -> VisualizadorOrdenamiento.insertionSort(arr, callback);
+                case "Merge Sort" -> VisualizadorOrdenamiento.mergeSort(arr, callback);
+                case "Quick Sort" -> VisualizadorOrdenamiento.quickSort(arr, callback);
+                case "Heap Sort" -> VisualizadorOrdenamiento.heapSort(arr, callback);
             }
 
             return null;
