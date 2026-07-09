@@ -1,21 +1,33 @@
 package itson.org.laboratorio_algoritmos.gui;
 
 import itson.org.laboratorio_algoritmos.datos.GeneradorDeArreglos;
+import itson.org.laboratorio_algoritmos.datos.PasoAnimacion;
 import itson.org.laboratorio_algoritmos.datos.ResultadoOrdenamiento;
 import itson.org.laboratorio_algoritmos.datos.TipoAlgoritmo;
+import itson.org.laboratorio_algoritmos.gui.utils.BotonRedondeado;
+import itson.org.laboratorio_algoritmos.gui.utils.PanelBarras;
+import itson.org.laboratorio_algoritmos.gui.utils.PanelRedondeado;
+import itson.org.laboratorio_algoritmos.ordenamientos.VisualizadorOrdenamiento;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.knowm.xchart.CategoryChart;
@@ -92,6 +104,19 @@ public class FrmDashboard extends javax.swing.JFrame {
         });
 
         jButton5.addActionListener(e -> ejecutar());
+
+        jTable1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int row = jTable1.rowAtPoint(e.getPoint());
+                    if (row >= 0) {
+                        String algoritmo = (String) jTable1.getValueAt(row, 0);
+                        mostrarAnimacion(algoritmo);
+                    }
+                }
+            }
+        });
     }
 
     private void aplicarEstiloModerno() {
@@ -428,6 +453,119 @@ public class FrmDashboard extends javax.swing.JFrame {
         panel.add(new XChartPanel<>(chart), BorderLayout.CENTER);
         panel.revalidate();
         panel.repaint();
+    }
+
+    private void mostrarAnimacion(String algoritmo) {
+        int tamano = Math.min(Math.max(jSlider1.getValue(), 10), 200);
+        GeneradorDeArreglos.TipoArreglo tipo = obtenerTipoArreglo();
+        int[] arreglo = GeneradorDeArreglos.generar(tamano, tipo);
+
+        JDialog dialog = new JDialog(this, "Animación - " + algoritmo, true);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.getContentPane().setBackground(TARJETA);
+
+        PanelBarras panelBarras = new PanelBarras();
+        panelBarras.setArreglo(arreglo);
+        panelBarras.setBackground(TARJETA);
+
+        PanelRedondeado contenedorBarras = new PanelRedondeado();
+        contenedorBarras.setBackground(LATERAL);
+        contenedorBarras.setLayout(new BorderLayout());
+        contenedorBarras.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        contenedorBarras.add(panelBarras, BorderLayout.CENTER);
+
+        JComboBox<String> cboVelocidad = new JComboBox<>(
+            new String[]{"Instantánea (1 ms)", "Rápida (25 ms)", "Media (100 ms)", "Lenta (250 ms)", "Muy lenta (500 ms)"});
+        cboVelocidad.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+        BotonRedondeado btnIniciar = new BotonRedondeado();
+        btnIniciar.setText("Iniciar");
+        btnIniciar.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnIniciar.setBackground(ACENTO);
+        btnIniciar.setForeground(TEXTO_CLARO);
+
+        JLabel lblEstado = new JLabel("Listo", JLabel.CENTER);
+        lblEstado.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblEstado.setForeground(TEXTO_MUTED);
+
+        JPanel controles = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 10));
+        controles.setBackground(TARJETA);
+        JLabel lblVel = new JLabel("Velocidad:");
+        lblVel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblVel.setForeground(TEXTO_OSCURO);
+        controles.add(lblVel);
+        controles.add(cboVelocidad);
+        controles.add(btnIniciar);
+        controles.add(lblEstado);
+
+        JPanel main = new JPanel(new BorderLayout(10, 10));
+        main.setBackground(TARJETA);
+        main.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(TARJETA);
+        JLabel titulo = new JLabel("Animación - " + algoritmo + "  (" + tamano + " elementos)", JLabel.CENTER);
+        titulo.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titulo.setForeground(ACENTO);
+        header.add(titulo, BorderLayout.CENTER);
+
+        JLabel lblSize = new JLabel("Tipo: " + tipo.name());
+        lblSize.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblSize.setForeground(TEXTO_MUTED);
+        lblSize.setHorizontalAlignment(JLabel.CENTER);
+        header.add(lblSize, BorderLayout.SOUTH);
+
+        main.add(header, BorderLayout.NORTH);
+        main.add(contenedorBarras, BorderLayout.CENTER);
+        main.add(controles, BorderLayout.SOUTH);
+
+        btnIniciar.addActionListener(e -> {
+            btnIniciar.setEnabled(false);
+            cboVelocidad.setEnabled(false);
+            lblEstado.setText("Ordenando...");
+            new SwingWorker<Void, PasoAnimacion>() {
+                @Override
+                protected Void doInBackground() {
+                    String vel = (String) cboVelocidad.getSelectedItem();
+                    int delay;
+                    if (vel == null || vel.startsWith("Instantánea")) delay = 1;
+                    else if (vel.startsWith("Rápida")) delay = 25;
+                    else if (vel.startsWith("Media")) delay = 100;
+                    else if (vel.startsWith("Lenta")) delay = 250;
+                    else delay = 500;
+                    java.util.function.Consumer<PasoAnimacion> callback = paso -> {
+                        publish(paso);
+                        try { Thread.sleep(delay); }
+                        catch (InterruptedException ex) { Thread.currentThread().interrupt(); }
+                    };
+                    switch (algoritmo) {
+                        case "Bubble Sort" -> VisualizadorOrdenamiento.bubbleSort(arreglo, callback);
+                        case "Selection Sort" -> VisualizadorOrdenamiento.selectionSort(arreglo, callback);
+                        case "Insertion Sort" -> VisualizadorOrdenamiento.insertionSort(arreglo, callback);
+                        case "Merge Sort" -> VisualizadorOrdenamiento.mergeSort(arreglo, callback);
+                        case "Quick Sort" -> VisualizadorOrdenamiento.quickSort(arreglo, callback);
+                        case "Heap Sort" -> VisualizadorOrdenamiento.heapSort(arreglo, callback);
+                    }
+                    return null;
+                }
+                @Override
+                protected void process(List<PasoAnimacion> pasos) {
+                    panelBarras.setPaso(pasos.get(pasos.size() - 1));
+                }
+                @Override
+                protected void done() {
+                    btnIniciar.setEnabled(true);
+                    cboVelocidad.setEnabled(true);
+                    lblEstado.setText("Ordenado");
+                }
+            }.execute();
+        });
+
+        dialog.add(main);
+        dialog.pack();
+        dialog.setSize(600, 400);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }
 
     @SuppressWarnings("unchecked")
