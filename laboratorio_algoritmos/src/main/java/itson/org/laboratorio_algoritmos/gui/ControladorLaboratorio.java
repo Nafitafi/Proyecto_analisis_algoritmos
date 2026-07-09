@@ -6,7 +6,10 @@ import itson.org.laboratorio_algoritmos.datos.ResultadoOrdenamiento;
 import itson.org.laboratorio_algoritmos.datos.TipoAlgoritmo;
 import itson.org.laboratorio_algoritmos.ordenamientos.AlgoritmoOrdenamiento;
 import itson.org.laboratorio_algoritmos.ordenamientos.BubbleSort;
+import itson.org.laboratorio_algoritmos.ordenamientos.HeapSort;
 import itson.org.laboratorio_algoritmos.ordenamientos.InsertionSort;
+import itson.org.laboratorio_algoritmos.ordenamientos.MergeSort;
+import itson.org.laboratorio_algoritmos.ordenamientos.QuickSort;
 import itson.org.laboratorio_algoritmos.ordenamientos.SelectionSort;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +42,17 @@ public class ControladorLaboratorio {
     }
 
     /**
-     * Metodo auxiliar para convertir enums al algoritmo que si es.
+     * Metodo auxiliar para convertir el enum del tipo de algoritmos
+     * a su respectiva instancia concreta.
      */
     private AlgoritmoOrdenamiento obtenerInstanciaAlgoritmo(TipoAlgoritmo tipo) {
         switch (tipo) {
             case BUBBLE_SORT: return new BubbleSort();
             case SELECTION_SORT: return new SelectionSort();
             case INSERTION_SORT: return new InsertionSort();
-            //Aqui se agregan los demás 
+            case MERGE_SORT: return new MergeSort();
+            case QUICK_SORT: return new QuickSort();
+            case HEAP_SORT: return new HeapSort();
             default: throw new IllegalArgumentException("Algoritmo no implementado: " + tipo);
         }
     }

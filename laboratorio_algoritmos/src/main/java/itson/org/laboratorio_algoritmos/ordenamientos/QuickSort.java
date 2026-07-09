@@ -50,7 +50,7 @@ public class QuickSort implements AlgoritmoOrdenamiento {
 
             //Ordenar recursivamente los elementos antes y despues de la partición
             quickSort(arr, bajo, indicePivote - 1, contadores);
-            quickSort(arr, indicePivote - 1, alto, contadores);
+            quickSort(arr, indicePivote + 1, alto, contadores);
         }
 
     }

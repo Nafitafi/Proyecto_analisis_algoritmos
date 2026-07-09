@@ -5,9 +5,14 @@
 package itson.org.laboratorio_algoritmos.gui;
 
 import itson.org.laboratorio_algoritmos.datos.ResultadoOrdenamiento;
-import java.lang.classfile.instruction.NewObjectInstruction;
+import java.awt.BorderLayout;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.table.DefaultTableModel;
+import org.knowm.xchart.CategoryChart;
+import org.knowm.xchart.CategoryChartBuilder;
+import org.knowm.xchart.XChartPanel;
+import org.knowm.xchart.style.Styler;
 
 /**
  *
@@ -23,12 +28,13 @@ public class FrmResultado extends javax.swing.JFrame {
     public FrmResultado(List<ResultadoOrdenamiento> resultados) {
         initComponents();
         llenarTabla(resultados);
+        generarGrafica(resultados);
         btnVolver.addActionListener(e -> dispose());
     }
     
     /**
      * Toma la lista de los resultados y le agrega una fila por cada algoritmo al modelo
-     * de tblComparaciones
+     * de tblComparaciones.
      */
     private void llenarTabla(List<ResultadoOrdenamiento> resultados){
         DefaultTableModel modelo = (DefaultTableModel) tblComparaciones.getModel();
@@ -42,6 +48,45 @@ public class FrmResultado extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Genera una gráfica de barras comparativa usando XChart con los resultados
+     * de los algoritmos. Muestra tres series: tiempo de ejecución, número de
+     * comparaciones y número de intercambios.
+     */
+    private void generarGrafica(List<ResultadoOrdenamiento> resultados) {
+        List<String> nombres = resultados.stream()
+                .map(ResultadoOrdenamiento::nombreAlgoritmo)
+                .collect(Collectors.toList());
+        List<Long> tiempos = resultados.stream()
+                .map(ResultadoOrdenamiento::tiempoEjecucionNs)
+                .collect(Collectors.toList());
+        List<Long> comparaciones = resultados.stream()
+                .map(ResultadoOrdenamiento::comparaciones)
+                .collect(Collectors.toList());
+        List<Long> intercambios = resultados.stream()
+                .map(ResultadoOrdenamiento::intercambios)
+                .collect(Collectors.toList());
+
+        CategoryChart chart = new CategoryChartBuilder()
+                .width(800)
+                .height(250)
+                .title("Comparación de Algoritmos")
+                .xAxisTitle("Algoritmo")
+                .yAxisTitle("Valor")
+                .build();
+
+        chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
+        chart.getStyler().setAvailableSpaceFill(0.8);
+        chart.getStyler().setOverlapped(false);
+
+        chart.addSeries("Tiempo (ns)", nombres, tiempos);
+        chart.addSeries("Comparaciones", nombres, comparaciones);
+        chart.addSeries("Intercambios", nombres, intercambios);
+
+        pnlGrafica.setLayout(new BorderLayout());
+        pnlGrafica.add(new XChartPanel<>(chart), BorderLayout.CENTER);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
