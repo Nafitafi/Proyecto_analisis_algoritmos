@@ -4,22 +4,62 @@ import itson.org.laboratorio_algoritmos.datos.GeneradorDeArreglos;
 import itson.org.laboratorio_algoritmos.datos.ResultadoOrdenamiento;
 import itson.org.laboratorio_algoritmos.datos.TipoAlgoritmo;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import org.knowm.xchart.CategoryChart;
-import org.knowm.xchart.CategoryChartBuilder;
+import org.knowm.xchart.HorizontalBarChart;
+import org.knowm.xchart.HorizontalBarChartBuilder;
+import org.knowm.xchart.HorizontalBarSeries;
 import org.knowm.xchart.XChartPanel;
-import org.knowm.xchart.style.Styler;
 
 public class FrmDashboard extends javax.swing.JFrame {
+
+    private static final Color FONDO_GENERAL = new Color(248, 250, 252);
+    private static final Color LATERAL = new Color(238, 242, 255);
+    private static final Color TARJETA = new Color(255, 255, 255);
+    private static final Color ACENTO = new Color(99, 102, 241);
+    private static final Color ACENTO_BORDE = new Color(199, 210, 254);
+    private static final Color TEXTO_OSCURO = new Color(30, 41, 59);
+    private static final Color TEXTO_MUTED = new Color(100, 116, 139);
+    private static final Color TEXTO_CLARO = new Color(255, 255, 255);
+    private static final Color BORDE = new Color(226, 232, 240);
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(FrmDashboard.class.getName());
 
     public FrmDashboard() {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        }
+
+        javax.swing.UIManager.put("Table.background", TARJETA);
+        javax.swing.UIManager.put("Table.foreground", TEXTO_OSCURO);
+        javax.swing.UIManager.put("Table.selectionBackground", ACENTO);
+        javax.swing.UIManager.put("Table.selectionForeground", TEXTO_CLARO);
+        javax.swing.UIManager.put("Table.gridColor", BORDE);
+        javax.swing.UIManager.put("TableHeader.background", FONDO_GENERAL);
+        javax.swing.UIManager.put("TableHeader.foreground", TEXTO_OSCURO);
+        javax.swing.UIManager.put("nimbusSelectionBackground", ACENTO);
+
         initComponents();
+        aplicarEstiloModerno();
         configurarControles();
     }
 
@@ -52,6 +92,126 @@ public class FrmDashboard extends javax.swing.JFrame {
         });
 
         jButton5.addActionListener(e -> ejecutar());
+    }
+
+    private void aplicarEstiloModerno() {
+        setTitle("Laboratorio de Algoritmos de Ordenamiento");
+        getContentPane().setBackground(FONDO_GENERAL);
+
+        jPanel3.setBackground(LATERAL);
+        jPanel3.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 0, 1, BORDE),
+                BorderFactory.createEmptyBorder(0, 0, 0, 0)));
+
+        Font fuenteLabel = new Font("Segoe UI", Font.BOLD, 13);
+        Font fuenteTabla = new Font("Segoe UI", Font.PLAIN, 13);
+        Font fuenteTab = new Font("Segoe UI", Font.BOLD, 14);
+
+        estiloTarjeta(jPanel1);
+        estiloTarjeta(jPanel2);
+        estiloTarjeta(jPanel4);
+
+        jLabel5.setForeground(TEXTO_MUTED);
+        jLabel5.setFont(fuenteLabel);
+        jLabel2.setForeground(TEXTO_MUTED);
+        jLabel2.setFont(fuenteLabel);
+        jLabel3.setForeground(TEXTO_MUTED);
+        jLabel3.setFont(fuenteLabel);
+        jLabel4.setForeground(TEXTO_MUTED);
+        jLabel4.setFont(new Font("Segoe UI", Font.ITALIC, 11));
+
+        jLabel1.setBackground(TARJETA);
+        jLabel1.setForeground(ACENTO);
+        jLabel1.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setOpaque(true);
+        jLabel1.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(ACENTO_BORDE),
+                BorderFactory.createEmptyBorder(4, 12, 4, 12)));
+
+        estiloToggle(jToggleButton1);
+        estiloToggle(jToggleButton2);
+        estiloToggle(jToggleButton3);
+        estiloToggle(jToggleButton4);
+
+        estiloRadio(jRadioButton1);
+        estiloRadio(jRadioButton2);
+        estiloRadio(jRadioButton3);
+        estiloRadio(jRadioButton4);
+        estiloRadio(jRadioButton5);
+        estiloRadio(jRadioButton6);
+
+        estiloBotonPreset(jButton1);
+        estiloBotonPreset(jButton2);
+        estiloBotonPreset(jButton3);
+        estiloBotonPreset(jButton4);
+
+        jButton5.setBackground(ACENTO);
+        jButton5.setForeground(TEXTO_CLARO);
+        jButton5.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        jButton5.setBorder(BorderFactory.createEmptyBorder(14, 0, 14, 0));
+        jButton5.setFocusPainted(false);
+        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+        jTable1.setRowHeight(38);
+        jTable1.setFont(fuenteTabla);
+        jTable1.setShowHorizontalLines(true);
+        jTable1.setShowVerticalLines(false);
+        jTable1.setIntercellSpacing(new java.awt.Dimension(0, 1));
+        jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        jTable1.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
+        jTable1.getTableHeader().setForeground(TEXTO_OSCURO);
+        jTable1.getTableHeader().setReorderingAllowed(false);
+        jTable1.getTableHeader().setResizingAllowed(false);
+        jScrollPane1.setBorder(BorderFactory.createEmptyBorder());
+        jScrollPane1.getViewport().setBackground(TARJETA);
+
+        jTabbedPane1.setFont(fuenteTab);
+
+        jSlider1.setBackground(LATERAL);
+        jSlider1.setForeground(ACENTO);
+    }
+
+    private void estiloTarjeta(javax.swing.JPanel panel) {
+        panel.setBackground(TARJETA);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDE),
+                BorderFactory.createEmptyBorder(8, 8, 8, 8)));
+    }
+
+    private void estiloToggle(javax.swing.JToggleButton btn) {
+        btn.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btn.setBackground(new Color(241, 245, 249));
+        btn.setForeground(TEXTO_OSCURO);
+        btn.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDE),
+                BorderFactory.createEmptyBorder(6, 14, 6, 14)));
+        btn.setFocusPainted(false);
+        btn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btn.setOpaque(true);
+    }
+
+    private void estiloRadio(javax.swing.JRadioButton rb) {
+        rb.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        rb.setForeground(TEXTO_OSCURO);
+        rb.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDE),
+                BorderFactory.createEmptyBorder(6, 10, 6, 10)));
+        rb.setFocusPainted(false);
+        rb.setOpaque(false);
+        rb.setContentAreaFilled(false);
+        rb.setBorderPainted(true);
+    }
+
+    private void estiloBotonPreset(javax.swing.JButton btn) {
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        btn.setBackground(FONDO_GENERAL);
+        btn.setForeground(TEXTO_OSCURO);
+        btn.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDE),
+                BorderFactory.createEmptyBorder(6, 12, 6, 12)));
+        btn.setFocusPainted(false);
+        btn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     }
 
     private GeneradorDeArreglos.TipoArreglo obtenerTipoArreglo() {
@@ -93,17 +253,94 @@ public class FrmDashboard extends javax.swing.JFrame {
     }
 
     private void llenarTabla(List<ResultadoOrdenamiento> resultados) {
+        long minTiempo = resultados.stream()
+                .mapToLong(ResultadoOrdenamiento::tiempoEjecucionNs)
+                .min().orElse(Long.MAX_VALUE);
+        String mejorAlgoritmo = resultados.stream()
+                .filter(r -> r.tiempoEjecucionNs() == minTiempo)
+                .findFirst().map(ResultadoOrdenamiento::nombreAlgoritmo)
+                .orElse("");
+
         DefaultTableModel modelo = new DefaultTableModel(
-                new String[]{"Algoritmo", "Tiempo de ejecución", "No. Comparaciones", "No. Intercambios"}, 0);
+                new String[]{"Algoritmo", "Tiempo", "Comparaciones", "Intercambios"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+        };
+
         for (ResultadoOrdenamiento r : resultados) {
+            String nombre = r.nombreAlgoritmo();
+            boolean esMejor = nombre.equals(mejorAlgoritmo);
+            String nombreMostrar = esMejor ? nombre + " ★" : nombre;
             modelo.addRow(new Object[]{
-                r.nombreAlgoritmo(),
+                nombreMostrar,
                 r.tiempoEjecucionNs() + " ns",
-                r.comparaciones(),
-                r.intercambios()
+                formatNumber(r.comparaciones()),
+                formatNumber(r.intercambios())
             });
         }
         jTable1.setModel(modelo);
+
+        jTable1.getColumnModel().getColumn(0).setPreferredWidth(140);
+        jTable1.getColumnModel().getColumn(1).setPreferredWidth(90);
+        jTable1.getColumnModel().getColumn(2).setPreferredWidth(110);
+        jTable1.getColumnModel().getColumn(3).setPreferredWidth(110);
+
+        jTable1.getTableHeader().setResizingAllowed(false);
+
+        jTable1.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value,
+                        isSelected, hasFocus, row, column);
+                String algoNombre = (String) table.getValueAt(row, 0);
+                boolean esMejor = algoNombre.contains("★");
+                if (!isSelected) {
+                    if (esMejor) {
+                        c.setBackground(new Color(254, 243, 199));
+                        c.setForeground(TEXTO_OSCURO);
+                    } else {
+                        String nombreLimpio = algoNombre.replace(" ★", "");
+                        Color algColor = obtenerColorAlgoritmo(nombreLimpio);
+                        c.setBackground(new Color(
+                                Math.min(255, algColor.getRed() / 6 + 240),
+                                Math.min(255, algColor.getGreen() / 6 + 240),
+                                Math.min(255, algColor.getBlue() / 6 + 240)));
+                        c.setForeground(TEXTO_OSCURO);
+                    }
+                }
+                if (column == 0 && c instanceof JLabel) {
+                    JLabel lbl = (JLabel) c;
+                    String n = (String) value;
+                    String limpio = n.replace(" ★", "");
+                    lbl.setForeground(obtenerColorAlgoritmo(limpio));
+                    if (esMejor) {
+                        lbl.setForeground(new Color(180, 130, 0));
+                    }
+                }
+                return c;
+            }
+        });
+    }
+
+    private String formatNumber(long n) {
+        if (n >= 1_000_000_000) return String.format("%.1fB", n / 1_000_000_000.0);
+        if (n >= 1_000_000) return String.format("%.1fM", n / 1_000_000.0);
+        if (n >= 1_000) return String.format("%.1fK", n / 1_000.0);
+        return String.valueOf(n);
+    }
+
+    private Color obtenerColorAlgoritmo(String nombre) {
+        Map<String, Color> colores = new HashMap<>();
+        colores.put("Bubble Sort", new Color(239, 68, 68));
+        colores.put("Selection Sort", new Color(249, 115, 22));
+        colores.put("Insertion Sort", new Color(234, 179, 8));
+        colores.put("Merge Sort", new Color(34, 197, 94));
+        colores.put("Quick Sort", new Color(59, 130, 246));
+        colores.put("Heap Sort", new Color(168, 85, 247));
+        return colores.getOrDefault(nombre, Color.GRAY);
     }
 
     private void generarGraficas(List<ResultadoOrdenamiento> resultados) {
@@ -128,16 +365,28 @@ public class FrmDashboard extends javax.swing.JFrame {
 
     private void ponerGrafica(javax.swing.JPanel panel, String titulo,
                               List<String> nombres, List<Long> valores) {
-        CategoryChart chart = new CategoryChartBuilder()
+        HorizontalBarChart chart = new HorizontalBarChartBuilder()
                 .width(800).height(350)
                 .title(titulo)
-                .xAxisTitle("Algoritmo")
-                .yAxisTitle("Valor")
+                .xAxisTitle(titulo)
+                .yAxisTitle("Algoritmo")
                 .build();
-        chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
-        chart.getStyler().setAvailableSpaceFill(0.8);
-        chart.getStyler().setOverlapped(false);
-        chart.addSeries(titulo, nombres, valores);
+
+        chart.getStyler().setLegendVisible(false);
+        chart.getStyler().setAvailableSpaceFill(0.85);
+        chart.getStyler().setPlotContentSize(0.95);
+
+        for (int i = 0; i < nombres.size(); i++) {
+            String nombre = nombres.get(i);
+            Long valor = valores.get(i);
+            Color color = obtenerColorAlgoritmo(nombre);
+
+            HorizontalBarSeries serie = chart.addSeries(nombre,
+                    java.util.Collections.singletonList(valor),
+                    java.util.Collections.singletonList(nombre));
+            serie.setFillColor(color);
+            serie.setLineColor(color);
+        }
 
         panel.removeAll();
         panel.setLayout(new BorderLayout());

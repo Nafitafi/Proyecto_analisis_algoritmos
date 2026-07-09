@@ -18,7 +18,7 @@ public class QuickSort implements AlgoritmoOrdenamiento {
 
         //Si el arreglo esta vacio     
         if (arr == null || arr.length <= 1) {
-            return new ResultadoOrdenamiento("QuickS Sort", 0, 0, 0);
+            return new ResultadoOrdenamiento("Quick Sort", 0, 0, 0);
         }
 
         //Acumuladroes 
