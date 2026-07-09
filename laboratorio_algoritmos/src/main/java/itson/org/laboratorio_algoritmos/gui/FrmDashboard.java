@@ -18,9 +18,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import org.knowm.xchart.HorizontalBarChart;
-import org.knowm.xchart.HorizontalBarChartBuilder;
-import org.knowm.xchart.HorizontalBarSeries;
+import org.knowm.xchart.CategoryChart;
+import org.knowm.xchart.CategoryChartBuilder;
+import org.knowm.xchart.CategorySeries;
 import org.knowm.xchart.XChartPanel;
 
 public class FrmDashboard extends javax.swing.JFrame {
@@ -96,6 +96,8 @@ public class FrmDashboard extends javax.swing.JFrame {
 
     private void aplicarEstiloModerno() {
         setTitle("Laboratorio de Algoritmos de Ordenamiento");
+        setMinimumSize(new java.awt.Dimension(1000, 650));
+        setSize(Math.max(getWidth(), 1000), Math.max(getHeight(), 650));
         getContentPane().setBackground(FONDO_GENERAL);
 
         jPanel3.setBackground(LATERAL);
@@ -167,9 +169,23 @@ public class FrmDashboard extends javax.swing.JFrame {
         jScrollPane1.getViewport().setBackground(TARJETA);
 
         jTabbedPane1.setFont(fuenteTab);
+        jTabbedPane1.setBorder(BorderFactory.createEmptyBorder());
 
         jSlider1.setBackground(LATERAL);
         jSlider1.setForeground(ACENTO);
+
+        jPanel6.setBackground(TARJETA);
+        jPanel6.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDE),
+                BorderFactory.createEmptyBorder(8, 8, 8, 8)));
+        jPanel7.setBackground(TARJETA);
+        jPanel7.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDE),
+                BorderFactory.createEmptyBorder(8, 8, 8, 8)));
+        jPanel8.setBackground(TARJETA);
+        jPanel8.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDE),
+                BorderFactory.createEmptyBorder(8, 8, 8, 8)));
     }
 
     private void estiloTarjeta(javax.swing.JPanel panel) {
@@ -270,11 +286,8 @@ public class FrmDashboard extends javax.swing.JFrame {
         };
 
         for (ResultadoOrdenamiento r : resultados) {
-            String nombre = r.nombreAlgoritmo();
-            boolean esMejor = nombre.equals(mejorAlgoritmo);
-            String nombreMostrar = esMejor ? nombre + " ★" : nombre;
             modelo.addRow(new Object[]{
-                nombreMostrar,
+                r.nombreAlgoritmo(),
                 r.tiempoEjecucionNs() + " ns",
                 formatNumber(r.comparaciones()),
                 formatNumber(r.intercambios())
@@ -296,14 +309,13 @@ public class FrmDashboard extends javax.swing.JFrame {
                 Component c = super.getTableCellRendererComponent(table, value,
                         isSelected, hasFocus, row, column);
                 String algoNombre = (String) table.getValueAt(row, 0);
-                boolean esMejor = algoNombre.contains("★");
+                boolean esMejor = algoNombre.equals(mejorAlgoritmo);
                 if (!isSelected) {
                     if (esMejor) {
                         c.setBackground(new Color(254, 243, 199));
-                        c.setForeground(TEXTO_OSCURO);
+                        c.setForeground(new Color(180, 130, 0));
                     } else {
-                        String nombreLimpio = algoNombre.replace(" ★", "");
-                        Color algColor = obtenerColorAlgoritmo(nombreLimpio);
+                        Color algColor = obtenerColorAlgoritmo(algoNombre);
                         c.setBackground(new Color(
                                 Math.min(255, algColor.getRed() / 6 + 240),
                                 Math.min(255, algColor.getGreen() / 6 + 240),
@@ -311,18 +323,19 @@ public class FrmDashboard extends javax.swing.JFrame {
                         c.setForeground(TEXTO_OSCURO);
                     }
                 }
-                if (column == 0 && c instanceof JLabel) {
-                    JLabel lbl = (JLabel) c;
-                    String n = (String) value;
-                    String limpio = n.replace(" ★", "");
-                    lbl.setForeground(obtenerColorAlgoritmo(limpio));
-                    if (esMejor) {
-                        lbl.setForeground(new Color(180, 130, 0));
-                    }
+                if (column == 0 && c instanceof JLabel && !isSelected) {
+                    ((JLabel) c).setForeground(obtenerColorAlgoritmo(algoNombre));
                 }
                 return c;
             }
         });
+
+        int rowH = jTable1.getRowHeight();
+        int headerH = jTable1.getTableHeader().getPreferredSize().height;
+        int totalH = resultados.size() * rowH + headerH + 4;
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(
+                jScrollPane1.getWidth(), Math.min(Math.max(totalH, 100), 280)));
+        jScrollPane1.revalidate();
     }
 
     private String formatNumber(long n) {
@@ -365,27 +378,49 @@ public class FrmDashboard extends javax.swing.JFrame {
 
     private void ponerGrafica(javax.swing.JPanel panel, String titulo,
                               List<String> nombres, List<Long> valores) {
-        HorizontalBarChart chart = new HorizontalBarChartBuilder()
+        CategoryChart chart = new CategoryChartBuilder()
                 .width(800).height(350)
                 .title(titulo)
-                .xAxisTitle(titulo)
-                .yAxisTitle("Algoritmo")
+                .xAxisTitle("")
+                .yAxisTitle("")
                 .build();
 
         chart.getStyler().setLegendVisible(false);
-        chart.getStyler().setAvailableSpaceFill(0.85);
+        chart.getStyler().setAvailableSpaceFill(0.9);
         chart.getStyler().setPlotContentSize(0.95);
+        chart.getStyler().setChartBackgroundColor(TARJETA);
+        chart.getStyler().setPlotBackgroundColor(TARJETA);
+        chart.getStyler().setPlotBorderVisible(false);
+        chart.getStyler().setXAxisLabelRotation(0);
+        chart.getStyler().setAxisTickLabelsFont(new Font("Segoe UI", Font.PLAIN, 12));
+        chart.getStyler().setChartTitleBoxVisible(false);
+        chart.getStyler().setChartPadding(10);
+        chart.getStyler().setPlotGridVerticalLinesVisible(false);
+        chart.getStyler().setStacked(true);
+        chart.getStyler().setYAxisTickLabelsFormattingFunction(
+            val -> {
+                if (val >= 1_000_000_000)
+                    return String.format("%.1fB", val / 1_000_000_000);
+                if (val >= 1_000_000)
+                    return String.format("%.1fM", val / 1_000_000);
+                if (val >= 1_000)
+                    return String.format("%.1fK", val / 1_000);
+                return String.format("%.0f", val);
+            });
 
         for (int i = 0; i < nombres.size(); i++) {
             String nombre = nombres.get(i);
             Long valor = valores.get(i);
             Color color = obtenerColorAlgoritmo(nombre);
 
-            HorizontalBarSeries serie = chart.addSeries(nombre,
-                    java.util.Collections.singletonList(valor),
-                    java.util.Collections.singletonList(nombre));
+            List<Long> ceros = new ArrayList<>();
+            for (int k = 0; k < nombres.size(); k++) {
+                ceros.add(0L);
+            }
+            ceros.set(i, valor);
+
+            CategorySeries serie = chart.addSeries(nombre, nombres, ceros);
             serie.setFillColor(color);
-            serie.setLineColor(color);
         }
 
         panel.removeAll();
@@ -525,7 +560,7 @@ public class FrmDashboard extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
