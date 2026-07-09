@@ -60,12 +60,12 @@
                           <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                           <Component id="panelRedondeado2" min="-2" max="-2" attributes="0"/>
                       </Group>
-                       <Group type="102" alignment="0" attributes="0">
-                           <EmptySpace min="-2" pref="350" max="-2" attributes="0"/>
-                           <Component id="btnAnalizar" min="-2" pref="117" max="-2" attributes="0"/>
-                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                           <Component id="btnAnimacion" min="-2" pref="117" max="-2" attributes="0"/>
-                       </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="350" max="-2" attributes="0"/>
+                          <Component id="btnAnalizar" min="-2" pref="117" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                          <Component id="btnAnimacion" min="-2" pref="117" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace pref="75" max="32767" attributes="0"/>
               </Group>
@@ -269,7 +269,6 @@
                 </Property>
                 <Property name="selected" type="boolean" value="true"/>
                 <Property name="text" type="java.lang.String" value="Ordenados"/>
-                <Property name="actionCommand" type="java.lang.String" value="Ordenados"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JRadioButton" name="rbtnCasiOrdenado">

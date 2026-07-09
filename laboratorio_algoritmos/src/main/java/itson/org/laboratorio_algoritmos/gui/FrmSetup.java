@@ -4,6 +4,13 @@
  */
 package itson.org.laboratorio_algoritmos.gui;
 
+import itson.org.laboratorio_algoritmos.datos.GeneradorDeArreglos;
+import itson.org.laboratorio_algoritmos.datos.ResultadoOrdenamiento;
+import itson.org.laboratorio_algoritmos.datos.TipoAlgoritmo;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author nafbr
@@ -17,7 +24,10 @@ public class FrmSetup extends javax.swing.JFrame {
      */
     public FrmSetup() {
         initComponents();
+        configurarBotonAnalizar();
     }
+    
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -357,7 +367,67 @@ public class FrmSetup extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+    * Validación para el botón de analizar 
+    * Cada validación corta la ejecución con return si falla
+    */
+    private void configurarBotonAnalizar() {
+        btnAnalizar.addActionListener(e -> {
 
+            // revisa que el usuario haya escrito algo
+            String texto = txtCantidad.getText().trim();
+            if (texto.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Debes ingresar una cantidad de elementos.", "Campo vacío", JOptionPane.WARNING_MESSAGE);
+                return; // no sigue si está vacío
+            }
+
+            // convierte el texto a número
+            int tamano;
+            try {
+                tamano = Integer.parseInt(texto);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "La cantidad debe ser un número entero válido.", "Número inválido", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // valida que el número esté dentro del rango que acepta
+            if (tamano < 10 || tamano > 10000) {
+                JOptionPane.showMessageDialog(this, "La cantidad debe estar entre 10 y 200.", "Fuera de rango", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // arma la lista de algoritmos según qué checkboxes estén marcados
+            List<TipoAlgoritmo> seleccionados = new ArrayList<>();
+            if (chkBubble.isSelected()) seleccionados.add(TipoAlgoritmo.BUBBLE_SORT);
+            if (chkSelection.isSelected()) seleccionados.add(TipoAlgoritmo.SELECTION_SORT);
+            if (chkInsertion.isSelected()) seleccionados.add(TipoAlgoritmo.INSERTION_SORT);
+            if (chkMerge.isSelected()) seleccionados.add(TipoAlgoritmo.MERGE_SORT);
+            if (chkQuick.isSelected()) seleccionados.add(TipoAlgoritmo.QUICK_SORT);
+            if (chkHeap.isSelected()) seleccionados.add(TipoAlgoritmo.HEAP_SORT);
+
+            // si no marcó ningún algoritmo, no hay nada que analizar
+            if (seleccionados.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Selecciona al menos un algoritmo.", "Sin selección", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            // determina el tipo de arreglo según el botón marcado
+            GeneradorDeArreglos.TipoArreglo tipoArreglo = null;
+            if(rbtnOrdenados.isSelected()){
+                tipoArreglo = GeneradorDeArreglos.TipoArreglo.ORDENADO;
+            }else if(rbtnCasiOrdenado.isSelected()){
+                tipoArreglo = GeneradorDeArreglos.TipoArreglo.CASI_ORDENADO;
+            }else if(rbtnDesordenado.isSelected()){
+                tipoArreglo = GeneradorDeArreglos.TipoArreglo.ALEATORIO;
+            }else if(rbtnInvertido.isSelected()){
+                tipoArreglo = GeneradorDeArreglos.TipoArreglo.INVERSO;
+            }
+            // aquí ya todo está validado y entonces se llama al controlador
+            List<ResultadoOrdenamiento> resultados = new ControladorLaboratorio().analizar(tamano, tipoArreglo, seleccionados);
+            FrmResultado ventanaResultado = new FrmResultado(resultados);
+            ventanaResultado.setVisible(true);
+        });
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bgrpOrden;
     private itson.org.laboratorio_algoritmos.gui.utils.BotonRedondeado btnAnalizar;

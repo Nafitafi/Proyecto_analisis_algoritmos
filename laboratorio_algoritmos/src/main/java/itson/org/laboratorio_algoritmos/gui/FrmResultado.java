@@ -4,6 +4,11 @@
  */
 package itson.org.laboratorio_algoritmos.gui;
 
+import itson.org.laboratorio_algoritmos.datos.ResultadoOrdenamiento;
+import java.lang.classfile.instruction.NewObjectInstruction;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author nafbr
@@ -15,10 +20,28 @@ public class FrmResultado extends javax.swing.JFrame {
     /**
      * Creates new form FrmResuktado
      */
-    public FrmResultado() {
+    public FrmResultado(List<ResultadoOrdenamiento> resultados) {
         initComponents();
+        llenarTabla(resultados);
+        btnVolver.addActionListener(e -> dispose());
     }
-
+    
+    /**
+     * Toma la lista de los resultados y le agrega una fila por cada algoritmo al modelo
+     * de tblComparaciones
+     */
+    private void llenarTabla(List<ResultadoOrdenamiento> resultados){
+        DefaultTableModel modelo = (DefaultTableModel) tblComparaciones.getModel();
+        for (ResultadoOrdenamiento resultado : resultados) {
+            modelo.addRow(new Object[]{
+            resultado.nombreAlgoritmo(),
+            resultado.tiempoEjecucionNs() + " ns",
+            resultado.comparaciones(),
+            resultado.intercambios()
+        });
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
