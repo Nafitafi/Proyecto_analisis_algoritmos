@@ -391,7 +391,7 @@ public class FrmSetup extends javax.swing.JFrame {
             }
 
             // valida que el número esté dentro del rango que acepta
-            if (tamano < 10 || tamano > 10000) {
+            if (tamano < 10 || tamano > 200) {
                 JOptionPane.showMessageDialog(this, "La cantidad debe estar entre 10 y 200.", "Fuera de rango", JOptionPane.WARNING_MESSAGE);
                 return;
             }
